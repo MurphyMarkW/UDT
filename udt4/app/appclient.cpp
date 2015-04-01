@@ -15,6 +15,8 @@
 
 using namespace std;
 
+#define BUFFER 128*1024;
+
 #ifndef WIN32
 void* monitor(void*);
 #else
@@ -51,9 +53,9 @@ int main(int argc, char* argv[])
 
    // UDT Options
    //UDT::setsockopt(client, 0, UDT_CC, new CCCFactory<CUDPBlast>, sizeof(CCCFactory<CUDPBlast>));
-   //UDT::setsockopt(client, 0, UDT_MSS, new int(9000), sizeof(int));
-   //UDT::setsockopt(client, 0, UDT_SNDBUF, new int(10000000), sizeof(int));
-   //UDT::setsockopt(client, 0, UDP_SNDBUF, new int(10000000), sizeof(int));
+   UDT::setsockopt(client, 0, UDT_MSS, new int(9000), sizeof(int));
+   UDT::setsockopt(client, 0, UDT_SNDBUF, new int(10000000), sizeof(int));
+   UDT::setsockopt(client, 0, UDP_SNDBUF, new int(10000000), sizeof(int));
    //UDT::setsockopt(client, 0, UDT_MAXBW, new int64_t(12500000), sizeof(int));
 
    // Windows UDP issue
@@ -96,7 +98,7 @@ int main(int argc, char* argv[])
    //if (NULL != cchandle)
    //   cchandle->setRate(500);
 
-   int size = 100000;
+   int size = BUFFER;
    char* data = new char[size];
 
    #ifndef WIN32
