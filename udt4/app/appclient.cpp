@@ -105,24 +105,40 @@ int main(int argc, char* argv[])
       CreateThread(NULL, 0, monitor, &client, 0, NULL);
    #endif
 
-   for (int i = 0; i < 1000000; i ++)
-   {
-      int ssize = 0;
-      int ss;
-      while (ssize < size)
-      {
-         if (UDT::ERROR == (ss = UDT::send(client, data + ssize, size - ssize, 0)))
-         {
-            cout << "send:" << UDT::getlasterror().getErrorMessage() << endl;
-            break;
-         }
+    while(true) {
+        int ss = 0;
+        int rs = read(STDIN_FILENO, data, size);
+        
+        int sent = 0;
+        while(sent < rs) {
+            if(UDT::ERROR == (ss = UDT::send(client, data + sent, rs - sent, 0))) {
+                cout << "send:" << UDT::getlasterror().getErrorMessage() << endl;
+                goto done;
+            }
+            sent += ss;
+        }
+    }
 
-         ssize += ss;
-      }
+done:;
 
-      if (ssize < size)
-         break;
-   }
+   //for (int i = 0; i < 1000000; i ++)
+   //{
+   //   int ssize = 0;
+   //   int ss;
+   //   while (ssize < size)
+   //   {
+   //      if (UDT::ERROR == (ss = UDT::send(client, data + ssize, size - ssize, 0)))
+   //      {
+   //         cout << "send:" << UDT::getlasterror().getErrorMessage() << endl;
+   //         break;
+   //      }
+   //
+   //      ssize += ss;
+   //   }
+   //
+   //   if (ssize < size)
+   //      break;
+   //}
 
    UDT::close(client);
    delete [] data;
